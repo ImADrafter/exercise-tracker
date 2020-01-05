@@ -1,11 +1,11 @@
-const express = require("express");
-const app = express();
-const bodyParser = require("body-parser");
+import express from "express";
+import bodyParser from "body-parser";
+import cors from "cors";
+import mongoose from "mongoose";
 
-const cors = require("cors");
-
-const mongoose = require("mongoose");
 mongoose.connect(process.env.MLAB_URI || "mongodb://localhost/exercise-track");
+
+const app = express();
 
 app.use(cors());
 
@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 
 app.use(express.static("public"));
 app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/views/index.html");
+  res.sendFile(__dirname.join("/views/index.html"));
 });
 
 // Not found middleware

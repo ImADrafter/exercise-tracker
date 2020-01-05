@@ -5,5 +5,5 @@
     "prettier/prettier": "error"
   },
   "env": { "commonjs": true },
-  "parserOptions": { "ecmaVersion": 2015 }
+  "parserOptions": { "ecmaVersion": 2020 }
 }

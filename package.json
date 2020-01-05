@@ -5,11 +5,13 @@
 	"main": "server.js",
 	"type": "module",
 	"scripts": {
-		"start": "node server.js"
+		"start": "node server.js",
+		"watch": "nodemon ./bin/www"
 	},
 	"dependencies": {
 		"body-parser": "^1.15.2",
 		"cors": "^2.8.1",
+		"custom-env": "^1.0.2",
 		"eslint": "^6.8.0",
 		"eslint-config-node": "^4.0.0",
 		"eslint-config-prettier": "^6.9.0",
@@ -17,11 +19,12 @@
 		"express": "^4.14.0",
 		"mongodb": "^2.2.14",
 		"mongoose": "^4.7.2",
+		"nodemon": "^2.0.2",
 		"prettier": "^1.19.1",
 		"shortid": "^2.2.6"
 	},
 	"engines": {
-		"node": "6.9.1"
+		"node": "13.5.0"
 	},
 	"repository": {
 		"url": "https://gomix.com/#!/project/welcome-project"

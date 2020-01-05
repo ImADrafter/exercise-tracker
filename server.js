@@ -2,7 +2,12 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import mongoose from "mongoose";
+import customEnv from "custom-env";
 
+/* eslint import/no-nodejs-modules: ["error", {"allow": ["path"]}] */
+import path from "path";
+
+customEnv.env();
 mongoose.connect(process.env.MLAB_URI || "mongodb://localhost/exercise-track");
 
 const app = express();
@@ -14,7 +19,8 @@ app.use(bodyParser.json());
 
 app.use(express.static("public"));
 app.get("/", (req, res) => {
-  res.sendFile(__dirname.join("/views/index.html"));
+  res.sendFile(path.join(__dirname, "./views/index.html"));
+  // res.sendFile(__dirname + "/views/index.html");
 });
 
 // Not found middleware

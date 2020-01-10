@@ -24,6 +24,12 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(rootDir, "./views/", "index.html"));
 });
 
+app.get("/api/exercise/users", (req, res) => {
+  Users.find({}, (error, users) => {
+    res.json(users);
+  });
+});
+
 app.post("/api/exercise/new-user", (req, res) => {
   const { username } = req.body;
 

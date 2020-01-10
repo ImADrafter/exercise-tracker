@@ -28,10 +28,18 @@ app.post("/api/exercise/new-user", (req, res) => {
   const { username } = req.body;
 
   Users.find({ username }, (error, result) => {
-    if (error) {
-      res.send("Username already in use");
+    if (result.length) {
+      res.send(`Username ${username} already in use`);
     } else {
-      res.send("Creating new user...");
+      const newUser = new Users({ username });
+      newUser.save((error, savedItem) => {
+        if (error) {
+          console.error(error);
+          res.send(error);
+        } else {
+          res.send(savedItem + "was saved");
+        }
+      });
     }
   });
 });

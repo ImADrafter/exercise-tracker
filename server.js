@@ -3,9 +3,9 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import mongoose from "mongoose";
 import customEnv from "custom-env";
-
-/* eslint import/no-nodejs-modules: ["error", {"allow": ["path"]}] */
+// eslint-disable-next-line import/no-nodejs-modules
 import path from "path";
+import Users from "./Models/Users.mjs";
 
 customEnv.env();
 mongoose.connect(process.env.MLAB_URI || "mongodb://localhost/exercise-track");
@@ -17,10 +17,23 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+const rootDir = path.resolve();
+
 app.use(express.static("public"));
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "./views/index.html"));
-  // res.sendFile(__dirname + "/views/index.html");
+  res.sendFile(path.join(rootDir, "./views/", "index.html"));
+});
+
+app.post("/api/exercise/new-user", (req, res) => {
+  const { username } = req.body;
+
+  Users.find({ username }, (error, result) => {
+    if (error) {
+      res.send("Username already in use");
+    } else {
+      res.send("Creating new user...");
+    }
+  });
 });
 
 // Not found middleware

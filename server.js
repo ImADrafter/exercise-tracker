@@ -109,9 +109,10 @@ app.get("/api/exercise/log", (req, res) => {
 
       console.log(exerciseArray);
 
-      res.json(
-        refinedExerciseArray.filter(_ => _)
-        // + "Total exercise count: " + exerciseArray.length
+      res.send(
+        JSON.stringify(refinedExerciseArray.filter(_ => _)) +
+          "Total exercise count: " +
+          exerciseArray.length
       );
     }
   });

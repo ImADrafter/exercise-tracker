@@ -58,7 +58,6 @@ app.post("/api/exercise/new-user", (req, res) => {
 // If date is not provided, get date atm
 const getDateOrNow = date => {
   if (date === "") {
-    console.log(moment().format("DD/MM/YYYY"));
     return moment().format("DD/MM/YYYY");
   }
   return date;
@@ -87,33 +86,41 @@ app.get("/api/exercise/log", (req, res) => {
     if (result.length) {
       const exerciseArray = result[0].exercises;
 
-      const refinedExerciseArray = exerciseArray.map(element => {
-        const { description, duration, date } = element;
+      const refinedExerciseArray = exerciseArray
+        .map(element => {
+          const { description, duration, date } = element;
 
-        const fullObj = {
-          description,
-          duration,
-          date
-        };
+          const fullObj = {
+            description,
+            duration,
+            date
+          };
 
-        if (from) {
-          return moment(date).isAfter(from) ? fullObj : undefined;
-        }
+          if (from) {
+            return moment(date).isAfter(from) ? fullObj : undefined;
+          }
 
-        if (to) {
-          return moment(date).isBefore(to) ? fullObj : undefined;
-        }
+          if (to) {
+            return moment(date).isBefore(to) ? fullObj : undefined;
+          }
 
-        return fullObj;
-      });
+          return fullObj;
+        })
+        .filter(_ => _);
 
-      console.log(exerciseArray);
-
-      res.send(
-        JSON.stringify(refinedExerciseArray.filter(_ => _)) +
-          "Total exercise count: " +
-          exerciseArray.length
-      );
+      if (limit) {
+        res.send(
+          JSON.stringify(refinedExerciseArray.slice(0, limit), null, "\t") +
+            "Total exercise count: " +
+            exerciseArray.length
+        );
+      } else {
+        res.send(
+          JSON.stringify(refinedExerciseArray, null, "\t") +
+            "Total exercise count: " +
+            exerciseArray.length
+        );
+      }
     }
   });
 });

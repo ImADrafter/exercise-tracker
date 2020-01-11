@@ -6,6 +6,7 @@ import customEnv from "custom-env";
 // eslint-disable-next-line import/no-nodejs-modules
 import path from "path";
 import Users from "./Models/Users.mjs";
+import moment from "moment";
 
 customEnv.env();
 mongoose.connect(process.env.MLAB_URI || "mongodb://localhost/exercise-track");
@@ -24,12 +25,14 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(rootDir, "./views/", "index.html"));
 });
 
+// Get all users
 app.get("/api/exercise/users", (req, res) => {
   Users.find({}, (error, users) => {
     res.json(users);
   });
 });
 
+// Create new user
 app.post("/api/exercise/new-user", (req, res) => {
   const { username } = req.body;
 
@@ -48,6 +51,31 @@ app.post("/api/exercise/new-user", (req, res) => {
       });
     }
   });
+});
+
+// If date is not provided, get date atm
+const getDateOrNow = date => {
+  if (date === "") {
+    console.log(moment().format("DD/MM/YYYY"));
+    return moment().format("DD/MM/YYYY");
+  }
+  return date;
+};
+
+// Add exercise to user
+app.post("/api/exercise/add", (req, res) => {
+  const { userId, description, duration, date } = req.body;
+
+  Users.findByIdAndUpdate(
+    userId,
+    {
+      $push: { exercises: { description, duration, date: getDateOrNow(date) } }
+    },
+    { new: true },
+    (error, result) => {
+      res.send("User id found" + result);
+    }
+  );
 });
 
 // Not found middleware

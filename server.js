@@ -25,6 +25,8 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(rootDir, "./views/", "index.html"));
 });
 
+app.set("json spaces", 2);
+
 // Get all users
 app.get("/api/exercise/users", (req, res) => {
   Users.find({}, (error, users) => {
@@ -76,6 +78,43 @@ app.post("/api/exercise/add", (req, res) => {
       res.send("User id found" + result);
     }
   );
+});
+
+// Get exercise log by _id
+app.get("/api/exercise/log", (req, res) => {
+  const { userId, from, to, limit } = req.query;
+  Users.find({ _id: userId }, (error, result) => {
+    if (result.length) {
+      const exerciseArray = result[0].exercises;
+
+      const refinedExerciseArray = exerciseArray.map(element => {
+        const { description, duration, date } = element;
+
+        const fullObj = {
+          description,
+          duration,
+          date
+        };
+
+        if (from) {
+          return moment(date).isAfter(from) ? fullObj : undefined;
+        }
+
+        if (to) {
+          return moment(date).isBefore(to) ? fullObj : undefined;
+        }
+
+        return fullObj;
+      });
+
+      console.log(exerciseArray);
+
+      res.json(
+        refinedExerciseArray.filter(_ => _)
+        // + "Total exercise count: " + exerciseArray.length
+      );
+    }
+  });
 });
 
 // Not found middleware

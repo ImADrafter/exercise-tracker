@@ -9,7 +9,17 @@ import Users from "./Models/Users.mjs";
 import moment from "moment";
 
 customEnv.env();
-mongoose.connect(process.env.MLAB_URI || "mongodb://localhost/exercise-track");
+
+mongoose
+  .connect(process.env.MLAB_URI || "mongodb://localhost/exercise-track", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
+  .then(() => console.log("Database succesfuly connected."))
+  .catch(error => {
+    console.log("There was an error conecting to the database");
+    console.error(error);
+  });
 
 const app = express();
 
@@ -30,6 +40,10 @@ app.set("json spaces", 2);
 // Get all users
 app.get("/api/exercise/users", (req, res) => {
   Users.find({}, (error, users) => {
+    if (error) {
+      console.log(error);
+      return;
+    }
     res.json(users);
   });
 });
